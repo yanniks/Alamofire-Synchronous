@@ -17,12 +17,12 @@ extension Request {
      
      - returns: The response.
      */
-    @warn_unused_result public func response() -> (request: NSURLRequest?, response: NSHTTPURLResponse?, data: NSData?, error: NSError?) {
+    @warn_unused_result public func response() -> (request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: NSError?) {
         
-        let semaphore = dispatch_semaphore_create(0)
-        var result: (request: NSURLRequest?, response: NSHTTPURLResponse?, data: NSData?, error: NSError?)!
+        let semaphore = DispatchSemaphore(value: 0)
+        var result: (request: URLRequest?, response: HTTPURLResponse?, data: Data?, error: NSError?)!
         
-        self.response(queue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), completionHandler: { request, response, data, error in
+        self.response(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault), completionHandler: { request, response, data, error in
             
             result = (
                 request: request,
@@ -31,10 +31,10 @@ extension Request {
                 error: error
             )
             
-            dispatch_semaphore_signal(semaphore)
+            semaphore.signal()
         })
         
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        semaphore.wait(timeout: DispatchTime.distantFuture)
         
         return result
     }
@@ -45,20 +45,20 @@ extension Request {
      
      - returns: The response.
      */
-    @warn_unused_result public func responseData() -> Response<NSData, NSError> {
+    @warn_unused_result public func responseData() -> Response<Data, NSError> {
         
-        let semaphore = dispatch_semaphore_create(0)
+        let semaphore = DispatchSemaphore(value: 0)
         
-        var result: Response<NSData, NSError>!
+        var result: Response<Data, NSError>!
         
-        self.responseData(queue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), completionHandler: { response in
+        self.responseData(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault), completionHandler: { response in
             
             result = response
-            dispatch_semaphore_signal(semaphore)
+            semaphore.signal()
             
         })
         
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        semaphore.wait(timeout: DispatchTime.distantFuture)
         
         return result
     }
@@ -71,20 +71,20 @@ extension Request {
      
      - returns: The response.
      */
-    @warn_unused_result public func responseJSON(options options: NSJSONReadingOptions = .AllowFragments) -> Response<AnyObject, NSError> {
+    @warn_unused_result public func responseJSON(options: JSONSerialization.ReadingOptions = .allowFragments) -> Response<AnyObject, NSError> {
         
-        let semaphore = dispatch_semaphore_create(0)
+        let semaphore = DispatchSemaphore(value: 0)
         
         var result: Response<AnyObject, NSError>!
         
-        self.responseJSON(queue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), options: options, completionHandler: {response in
+        self.responseJSON(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault), options: options, completionHandler: {response in
             
             result = response
-            dispatch_semaphore_signal(semaphore)
+            semaphore.signal()
             
         })
         
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        semaphore.wait(timeout: DispatchTime.distantFuture)
         
         return result
     }
@@ -99,20 +99,20 @@ extension Request {
      
      - returns: The response.
      */
-    @warn_unused_result public func responseString(encoding encoding: NSStringEncoding? = nil) -> Response<String, NSError> {
+    @warn_unused_result public func responseString(encoding: String.Encoding? = nil) -> Response<String, NSError> {
         
-        let semaphore = dispatch_semaphore_create(0)
+        let semaphore = DispatchSemaphore(value: 0)
         
         var result: Response<String, NSError>!
         
-        self.responseString(queue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), encoding: encoding, completionHandler: { response in
+        self.responseString(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault), encoding: encoding, completionHandler: { response in
             
             result = response
-            dispatch_semaphore_signal(semaphore)
+            semaphore.signal()
             
         })
         
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        semaphore.wait(timeout: DispatchTime.distantFuture)
         
         return result
     }
@@ -125,20 +125,20 @@ extension Request {
      
      - returns: The response.
      */
-    @warn_unused_result public func responsePropertyList(options options: NSPropertyListReadOptions = NSPropertyListReadOptions()) -> Response<AnyObject, NSError> {
+    @warn_unused_result public func responsePropertyList(options: PropertyListSerialization.ReadOptions = PropertyListSerialization.ReadOptions()) -> Response<AnyObject, NSError> {
         
-        let semaphore = dispatch_semaphore_create(0)
+        let semaphore = DispatchSemaphore(value: 0)
         
         var result: Response<AnyObject, NSError>!
         
-        self.responsePropertyList(queue: dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), options: options, completionHandler: { response in
+        self.responsePropertyList(queue: DispatchQueue.global(attributes: DispatchQueue.GlobalAttributes.qosDefault), options: options, completionHandler: { response in
             
             result = response
-            dispatch_semaphore_signal(semaphore)
+            semaphore.signal()
             
         })
         
-        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER)
+        semaphore.wait(timeout: DispatchTime.distantFuture)
         
         return result
     }
